@@ -1,4 +1,6 @@
 class ProductsController < ApplicationController
+  before_action :set_product, only: [:show, :edit, :update]
+
   def index
     @products = Product.page(params[:page])
 
@@ -6,7 +8,6 @@ class ProductsController < ApplicationController
   end
 
   def show
-    @product = Product.find(params[:id])
     respond_with(@product)
   end
 
@@ -20,6 +21,14 @@ class ProductsController < ApplicationController
     respond_with(@product)
   end
 
+  def edit
+  end
+
+  def update
+    @product.update(product_params)
+    respond_with @product
+  end
+
   private
 
   def product_params
@@ -27,5 +36,6 @@ class ProductsController < ApplicationController
   end
 
   def set_product
+    @product = Product.find(params[:id])
   end
 end

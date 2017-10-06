@@ -129,69 +129,71 @@ RSpec.describe ProductsController, type: :controller do
     end
   end
 
-  # describe 'PATCH #update' do
-  #   sign_in_user
-  #   let!(:users_product) { create(:product, user: @user) }
-  #
-  #   context 'with valid attributes' do
-  #     it 'assigns the requested product to @product' do
-  #       patch :update, params: { id: users_product,
-  #         product: attributes_for(:product) }, format: :js
-  #       expect(assigns(:product)).to eq users_product
-  #     end
-  #
-  #     it 'change product attributes' do
-  #       patch :update, params: { id: users_product,
-  #         product: { title: 'new_title', body: 'new_body' } }, format: :js
-  #       users_product.reload
-  #       expect(users_product.title).to eq 'new_title'
-  #       expect(users_product.body).to eq 'new_body'
-  #     end
-  #
-  #     it 'redirects to updated @product' do
-  #       patch :update, params: { id: users_product,
-  #         product: attributes_for(:product) }, format: :js
-  #       expect(response).to render_template :update
-  #     end
-  #   end
-  #
-  #   context 'with invalid attributes' do
-  #     let(:title) { users_product.title }
-  #     let(:body) { users_product.body }
-  #     before do
-  #       patch :update, params: { id: users_product,
-  #         product: { title: 'new_title', body: nil } }, format: :js
-  #     end
-  #     it 'does not change @product attributes' do
-  #       users_product.reload
-  #       expect(users_product.title).to eq title
-  #       expect(users_product.body).to eq body
-  #     end
-  #
-  #     it 're-renders edit view' do
-  #       expect(response).to render_template :update
-  #     end
-  #   end
-  #
-  #   context 'user tries to update product that does not belong to him' do
-  #     let(:title) { product.title }
-  #     let(:body) { product.body }
-  #     before do
-  #       patch :update, params: { id: product,
-  #         product: { title: 'new_title', body: 'new_body' } }, format: :js
-  #     end
-  #     it 'does not update product attributes' do
-  #       product.reload
-  #       expect(product.title).to eq title
-  #       expect(product.body).to eq body
-  #     end
-  #
-  #     it 'returns 403 status' do
-  #       expect(response).to have_http_status(403)
-  #     end
-  #   end
-  # end
-  #
+  describe 'PATCH #update' do
+
+    context 'authenticated user tries to update product' do
+      sign_in_user
+
+      context 'with valid attributes' do
+        it 'assigns the requested product to @product' do
+          patch :update, params: { id: product,
+            product: attributes_for(:product) }
+          expect(assigns(:product)).to eq product
+        end
+
+        it 'change product attributes' do
+          patch :update, params: { id: product,
+            product: { name: 'new_name', wieght: '111' } }
+          product.reload
+          expect(product.name).to eq 'new_name'
+          expect(product.wieght).to eq 111
+        end
+
+        it 'redirects to updated @product' do
+          patch :update, params: { id: product,
+            product: attributes_for(:product) }
+          expect(response).to redirect_to product_path(product)
+        end
+      end
+
+      context 'with invalid attributes' do
+        let(:name) { product.name }
+        let(:wieght) { product.wieght }
+        before do
+          patch :update, params: { id: product,
+            product: { name: 'new_name', wieght: nil } }
+        end
+        it 'does not change @product attributes' do
+          product.reload
+          expect(product.name).to eq name
+          expect(product.wieght).to eq wieght
+        end
+
+        it 're-renders edit view' do
+          expect(response).to render_template :edit
+        end
+      end
+    end
+
+    context 'unauthenticated user tries to update product' do
+      let(:name) { product.name }
+      let(:wieght) { product.wieght }
+      before do
+        patch :update, params: { id: product,
+          product: { name: 'new_name', body: '111' } }
+      end
+      it 'does not update product attributes' do
+        product.reload
+        expect(product.name).to eq name
+        expect(product.wieght).to eq wieght
+      end
+
+      it 'redirects to new sesseion path' do
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
+  end
+
   # describe 'DELETE #destroy' do
   #   sign_in_user
   #   let!(:users_product) { create(:product, user: @user) }
