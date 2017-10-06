@@ -6,4 +6,6 @@ class Product < ApplicationRecord
   validates :wieght, presence: true
 
   validates_numericality_of :wieght
+
+  self.per_page = 5
 end
