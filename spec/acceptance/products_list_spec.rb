@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Products list', %q{
-  In order to find the required answer,
+  In order to find the specific product,
   the user should have the opportunity
   to view the list of products
 } do
@@ -16,7 +16,7 @@ feature 'Products list', %q{
     expect(page).to have_content products.last.name
   end
 
-  scenario 'Unauthenticated user views list of product' do
+  scenario 'Unauthenticated user tries to see list of products' do
     visit products_path
 
     expect(page).to_not have_content products.first.name
