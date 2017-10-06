@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: [:show, :edit, :update]
+  before_action :set_product, only: [:show, :edit, :update, :destroy]
 
   def index
     @products = Product.page(params[:page])
@@ -27,6 +27,10 @@ class ProductsController < ApplicationController
   def update
     @product.update(product_params)
     respond_with @product
+  end
+
+  def destroy
+    respond_with(@product.destroy)
   end
 
   private

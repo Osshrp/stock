@@ -4,4 +4,4 @@
   p Ангар: #{@product.hangar.number}
 = link_to 'Изменить', edit_product_path(@product), class: 'btn btn-primary'
 '
-= link_to 'Удалить', @product, method: :patch, class: 'btn btn-primary'
+= link_to 'Удалить', @product, method: :delete, class: 'btn btn-primary'
