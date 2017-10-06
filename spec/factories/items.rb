@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :stock_product do
+  factory :item do
     product
     total_wieght "9.99"
     quantity 1

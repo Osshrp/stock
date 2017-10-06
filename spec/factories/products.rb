@@ -1,6 +1,10 @@
 FactoryGirl.define do
+  sequence :name do |n|
+    "MyString#{n}"
+  end
+
   factory :product do
-    name "MyString"
+    name
     wieght "9.99"
     hangar
   end

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 feature 'View product', %q{
-  In order to read the product
   I need to be able to view product
 } do
   given(:user) { create(:user) }

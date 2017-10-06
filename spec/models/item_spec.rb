@@ -1,5 +1,5 @@
 require 'rails_helper'
 
-RSpec.describe StockProduct, type: :model do
+RSpec.describe Item, type: :model do
   it { should belong_to(:product) }
 end
