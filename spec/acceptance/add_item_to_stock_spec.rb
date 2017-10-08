@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-feature 'Create item', %q{
+feature 'Add item', %q{
   as an authenticated user
-  I need to be able to create itmes in stock
+  I need to be able to add itmes to the stock
 } do
 
   given(:user) { create(:user) }
   given!(:product) { create(:product) }
 
-  describe 'Authenticated user creates item' do
+  describe 'Authenticated user adds item' do
 
     scenario 'it creates new item if item does not exists on the stock' do
       sign_in(user)

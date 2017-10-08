@@ -12,4 +12,10 @@ RSpec.describe Item, type: :model do
       expect(item.total_wieght).to eq(item.product.wieght * 3)
     end
   end
+
+  describe '#add' do
+    it 'should adds up item.quantity with parametr' do
+      expect(item.add(10)).to eq(13)
+    end
+  end
 end

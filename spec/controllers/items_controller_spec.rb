@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ItemsController, type: :controller do
-  let(:item) { create(:item) }
+  let(:item) { create(:item, quantity: 10) }
   describe 'GET #index' do
     let(:items) { create_list(:item, 2) }
 
@@ -139,6 +139,73 @@ RSpec.describe ItemsController, type: :controller do
       it 'redirects to new session path' do
         post :create, params: { item: attributes_for(:item)
           .merge(product_id: product) }
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
+  end
+
+  describe 'GET #subtract' do
+    context 'authenticated user tries to decrease item quantity' do
+      sign_in_user
+      before { get :subtract, params: { id: item } }
+      it 'assigns item to @item' do
+        expect(assigns(:item)).to eq item
+      end
+
+      it 'renders new view' do
+        expect(response).to render_template :subtract
+      end
+    end
+
+    context 'guest tries to decrease item quantity' do
+      before {  get :subtract, params: { id: item }}
+      it 'assigns item to @item' do
+        expect(assigns(:item)).to_not eq item
+      end
+
+      it 'renders new view' do
+        expect(response).to_not render_template :subtract
+      end
+    end
+  end
+
+  describe 'PATCH #deduct' do
+    let(:product) { create(:product) }
+
+    context 'authenticated user tries to decrease item quantity' do
+      sign_in_user
+      context 'with valid attributes' do
+
+        it 'decreasesa item quantity' do
+          patch :deduct, params: { id: item, item: { product_id: item.product, quantity: '5' } }
+          item.reload
+          expect(item.quantity).to eq(5)
+        end
+
+        it 'redirects to show view' do
+          patch :deduct, params: { id: item, item: { product_id: item.product, quantity: '5' } }
+          expect(response).to redirect_to item_path(item)
+        end
+      end
+
+      context 'if item quantity - params 0 or less' do
+        let!(:item) { create(:item, quantity: 5, product: product) }
+        it 'does not change quantity' do
+          patch :deduct, params: { id: item, item: { product_id: item.product, quantity: '10' } }
+          expect(item.quantity).to eq(5)
+        end
+      end
+    end
+
+    context 'unauthenticated user tries to deduct item' do
+      it 'does not decrease items quantity' do
+        item
+        patch :deduct, params: { id: item.id, quantity: '5' }
+        expect(item.quantity).to eq(10)
+      end
+
+      it 'redirects to new session path' do
+        patch :deduct, params: { id: item.id, quantity: '5' }
         expect(response).to redirect_to new_user_session_path
       end
     end

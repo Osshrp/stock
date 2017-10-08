@@ -4,5 +4,8 @@ Rails.application.routes.draw do
   root to: 'products#index'
 
   resources :products
-  resources :items
+  resources :items do
+    patch :deduct, on: :member
+    get :subtract, on: :member
+  end
 end

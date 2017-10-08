@@ -1,5 +1,5 @@
 class ItemsController < ApplicationController
-  before_action :set_item, only: [:show, :update, :edit, :destroy]
+  before_action :set_item, only: [:show, :update, :edit, :destroy, :deduct, :subtract]
   before_action :set_product, only: [:show, :new]
   def index
     @index = 0
@@ -7,7 +7,6 @@ class ItemsController < ApplicationController
   end
 
   def show
-    @item = Item.find(params[:id])
     @product = @item.product
     respond_with(@item)
   end
@@ -24,6 +23,15 @@ class ItemsController < ApplicationController
     respond_with(@item)
   end
 
+  def subtract
+  end
+
+  def deduct
+    @item.subtract(items_params[:quantity])
+    @item.save
+    respond_with(@item, action: :subtract)
+  end
+
   private
 
   def items_params
@@ -34,6 +42,6 @@ class ItemsController < ApplicationController
   end
 
   def set_item
-
+    @item = Item.find(params[:id])
   end
 end
