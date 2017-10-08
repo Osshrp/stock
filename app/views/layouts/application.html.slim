@@ -28,9 +28,9 @@ html lang="en"
           a.navbar-brand href="#"Stock
           .navbar-collapse.collapse.navbar-responsive-collapse
             ul.nav.navbar-nav
-              li= link_to "Link 1", "/path1"
               - if user_signed_in?
                 li= link_to 'Номенклатура товаров', products_path(my_posts: '1')
+                li= link_to "Склад",  items_path
                 li= link_to 'Выйти', destroy_user_session_path, method: :delete
                 li= link_to current_user.email, '#'
               - else

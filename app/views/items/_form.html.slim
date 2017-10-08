@@ -1,0 +1,11 @@
+= form_for item do |f|
+  = render 'common/errors', resource: item
+  .form-group
+    = f.label :name, 'Товар'
+    = f.collection_select(:product_id, Product.all, :id, :name,
+                          { prompt: 'Выберите товар' }, { class: 'form-control' })
+  .form-group
+    = f.label :quantity,  'Количество'
+    = f.number_field :quantity, class: 'form-control'
+  .form-group
+    = f.submit 'Сохранить', class: 'btn btn-primary'
