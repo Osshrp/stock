@@ -1,3 +1,19 @@
+.transactions
+  table.table.table-bordered.table-hover
+    thead
+      tr
+        th Дата
+        th Организация
+        th Количество (шт.)
+        th Наименование товара
+    tbody
+      - @transactions.each do |transaction|
+        tr
+          td= transaction.transaction_date
+          td= transaction.user.name
+          td= transaction.quantity
+          td= transaction.product.name
+
 .items
   table.table.table-bordered.table-hover
     thead

@@ -1,0 +1,23 @@
+= form_for [:admin, user] do |f|
+  = render 'common/errors', resource: user
+  .field
+    = f.label :name
+    br/
+    = f.text_field :name, class: 'form-control'
+  .field
+    = f.label :email
+    br/
+    = f.email_field :email, autofocus: true, class: 'form-control'
+  .field
+    = f.label :password
+    - if @minimum_password_length
+      em
+        | (#{@minimum_password_length} characters minimum)
+    br/
+    = f.password_field :password, autocomplete: "off", class: 'form-control'
+  .field
+    = f.label :password_confirmation
+    br/
+    = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control'
+  .actions
+    = f.submit "Сохранить", class: 'btn btn-primary'
