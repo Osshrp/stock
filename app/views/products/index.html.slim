@@ -8,4 +8,5 @@ table.table.table-bordered.table-hover
       th Ангар
   tbody
     = render @products, index: @index
-p = link_to 'Добавить номенклатуру', new_product_path, class: 'btn btn-primary'
+- if can?(:create, Product)
+  p = link_to 'Добавить номенклатуру', new_product_path, class: 'btn btn-primary'

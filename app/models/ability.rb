@@ -19,11 +19,15 @@ class Ability
   end
 
   def seller_abilities
-    can :read, Item
+    can :create, Transaction
+    can :read, [Item, Product]
+    can :subtract, Item
+    can :deduct, Item
   end
 
   def contractor_abilities
-    can :read, Item
+    can :create, [Transaction, Item]
+    can :read, [Item, Product]
   end
 
   def guest_abilities

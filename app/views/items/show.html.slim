@@ -4,8 +4,11 @@
   p Остаток на складе (шт): #{@item.quantity}
   p Остаток на складе (кг): #{@item.total_wieght}
   p Ангар: #{@product.hangar.number}
-= link_to 'Изменить', edit_item_path(@item), class: 'btn btn-primary'
-'
-= link_to 'Удалить', @item, method: :delete, class: 'btn btn-primary'
-'
-= link_to 'Забрать товар со склада', subtract_item_path(@item), class: 'btn btn-primary'
+- if can?(:update, Item)
+  = link_to 'Изменить', edit_item_path(@item), class: 'btn btn-primary'
+  '
+- if can?(:destroy, Item)
+  = link_to 'Удалить', @item, method: :delete, class: 'btn btn-primary'
+  '
+- if can?(:deduct, Item)
+  = link_to 'Забрать товар со склада', subtract_item_path(@item), class: 'btn btn-primary'

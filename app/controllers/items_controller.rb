@@ -28,9 +28,11 @@ class ItemsController < ApplicationController
   end
 
   def subtract
+    authorize! :subtract, @item
   end
 
   def deduct
+    authorize! :deduct, @item
     @item.subtract(items_params[:quantity])
     @item.save
     create_transaction(items_params[:quantity].to_i.abs * -1)
