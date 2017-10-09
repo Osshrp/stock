@@ -1,5 +1,6 @@
 class Admin::UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
+
   def index
     @users = User.all
   end
@@ -13,6 +14,7 @@ class Admin::UsersController < ApplicationController
 
   def create
     @user = User.create(user_params)
+    set_role
     respond_with(:admin, @user)
   end
 
@@ -20,11 +22,8 @@ class Admin::UsersController < ApplicationController
   end
 
   def update
-    params[:user].delete(:password) if params[:user][:password].blank?
-    if params[:user][:password].blank? and params[:user][:password_confirmation].blank?
-      params[:user].delete(:password_confirmation)
-    end
     @user.update(user_params)
+    set_role
     respond_with(:admin, @user)
   end
 
@@ -35,7 +34,13 @@ class Admin::UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :current_password)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation,
+                                 :current_password)
+  end
+
+  def set_role
+    @user.roles.destroy_all
+    @user.add_role(Role.find(params[:role]).name)
   end
 
   def set_user

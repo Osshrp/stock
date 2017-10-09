@@ -5,19 +5,24 @@
     br/
     = f.text_field :name, class: 'form-control'
   .field
+    = f.label :role, 'Роль'
+    = select_tag(:role, options_from_collection_for_select(Role.all, :id, :name,
+      prompt: 'Выберите роль'), class: 'form-control')
+  .field
     = f.label :email
     br/
     = f.email_field :email, autofocus: true, class: 'form-control'
-  .field
-    = f.label :password
-    - if @minimum_password_length
-      em
-        | (#{@minimum_password_length} characters minimum)
-    br/
-    = f.password_field :password, autocomplete: "off", class: 'form-control'
-  .field
-    = f.label :password_confirmation
-    br/
-    = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control'
+  - if params[:action] == 'new'
+    .field
+      = f.label :password
+      - if @minimum_password_length
+        em
+          | (#{@minimum_password_length} characters minimum)
+      br/
+      = f.password_field :password, autocomplete: "off", class: 'form-control'
+    .field
+      = f.label :password_confirmation
+      br/
+      = f.password_field :password_confirmation, autocomplete: "off", class: 'form-control'
   .actions
     = f.submit "Сохранить", class: 'btn btn-primary'
