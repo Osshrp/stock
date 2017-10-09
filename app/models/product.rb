@@ -1,6 +1,7 @@
 class Product < ApplicationRecord
   belongs_to :hangar
   has_many :items
+  has_many :transactions
 
   validates :name, presence: true
   validates :wieght, presence: true
