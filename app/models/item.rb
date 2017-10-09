@@ -16,6 +16,10 @@ class Item < ApplicationRecord
     self.quantity = self.quantity.to_i - amount.to_i
   end
 
+  def self.summ(collection)
+    collection
+  end
+
   private
 
   def calculate_total_wieght

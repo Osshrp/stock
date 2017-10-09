@@ -4,32 +4,30 @@ feature 'View admin panel', %q{
   As an administator
   I need to be able view admin dashboard
 } do
-  given(:user) { create(:user, admin: true) }
+  given(:user) { create(:user) }
   given(:product) { create(:product) }
+  given!(:items) { create_list(:item, 10) }
   given(:item) { create(:item, product: product, quantity: 20) }
 
   context 'Admin' do
     scenario 'sees the dashboard' do
       sign_in(user)
-      visit admin_dashboard_path
+      visit admin_items_path
 
-      within '.item' do
-        expect(page).to have_content 'MyString'
-        expect(page).to have_content '9.99'
-        expect(page).to have_content '3'
-        expect(page).to have_content 9.99*3
-        expect(page).to have_content item.product.hangar.number
+      within '.items' do
+        expect(page).to have_content items.first.product.name
+        expect(page).to have_content items.last.product.name
+        # expect(page).to have_content item.product.hangar.number
       end
     end
   end
 
   context 'Unauthenticated user' do
     scenario 'does not see the item' do
-      visit item_path(item)
+      visit admin_items_path
 
-      expect(page).to_not have_content 'MyString'
-      expect(page).to_not have_content '9.99'
-      expect(page).to_not have_content "Ангар: #{item.product.hangar.number}"
+      expect(page).to_not have_content items.first.product.name
+      expect(page).to_not have_content items.last.product.name
     end
   end
 end

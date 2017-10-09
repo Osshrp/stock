@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, :controllers => { registrations: 'registrations' }
 
   root to: 'products#index'
 
@@ -7,5 +7,9 @@ Rails.application.routes.draw do
   resources :items do
     patch :deduct, on: :member
     get :subtract, on: :member
+  end
+
+  namespace :admin do
+    resources :items, only: :index
   end
 end
