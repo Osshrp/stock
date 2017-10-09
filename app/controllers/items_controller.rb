@@ -1,6 +1,9 @@
 class ItemsController < ApplicationController
   before_action :set_item, only: [:show, :update, :edit, :destroy, :deduct, :subtract]
   before_action :set_product, only: [:show, :new]
+
+  authorize_resource
+
   def index
     @index = 0
     @items = Item.page(params[:page]).distinct

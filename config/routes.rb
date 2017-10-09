@@ -3,7 +3,12 @@ Rails.application.routes.draw do
 
   root to: 'products#index'
 
+  # devise_scope :user do
+  #   root to: "devise/sessions#new"
+  # end
+
   resources :products
+
   resources :items do
     patch :deduct, on: :member
     get :subtract, on: :member
