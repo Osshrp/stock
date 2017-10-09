@@ -41,8 +41,10 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def set_role
-    @user.roles.destroy_all
-    @user.add_role(Role.find(params[:role]).name)
+    unless @user == current_user
+      @user.roles.destroy_all
+      @user.add_role(Role.find(params[:role]).name)
+    end
   end
 
   def set_user

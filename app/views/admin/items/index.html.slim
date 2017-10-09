@@ -30,4 +30,3 @@
         td { colspan = '2' } Итого:
         td #{@items.sum(:quantity)} ящиков
   p= link_to 'Добавить товар на склад', new_item_path, class: 'btn btn-primary'
-= will_paginate @items
