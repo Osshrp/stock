@@ -16,7 +16,7 @@ class Admin::UsersController < Admin::BaseController
 
   def create
     @user = User.create(user_params)
-    @user.set_role(params[:role])
+    @user.set_role(params[:role]) if params[:role]
     respond_with(:admin, @user)
   end
 
