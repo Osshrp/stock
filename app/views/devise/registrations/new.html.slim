@@ -7,7 +7,7 @@ h2 Sign up
     = f.text_field :name, class: 'form-control'
   .field
     = f.label :role, 'Роль'
-    = select_tag(:role, options_from_collection_for_select(Role.all, :id, :name,
+    = select_tag(:role, options_from_collection_for_select(Role.show, :id, :name,
       prompt: 'Выберите роль'), class: 'form-control')
   .field
     = f.label :email

@@ -10,4 +10,8 @@ class Role < ApplicationRecord
             :allow_nil => true
 
   scopify
+
+  def self.show
+    all.to_a.delete_if { |el|  el.name == 'admin' }
+  end
 end
