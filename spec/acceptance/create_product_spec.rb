@@ -5,33 +5,57 @@ feature 'Create product', %q{
   I need to be able to create products
 } do
 
-  given(:user) { create(:user) }
+  given(:admin_user) { create(:user) }
+  given(:contractor_user) { create(:user) }
+  given(:seller_user) { create(:user) }
   given!(:hangar) { create(:hangar) }
 
-  scenario 'Authenticated user creates product' do
-    sign_in(user)
+  describe 'Admin user' do
+    before { admin_user.add_role(:admin) }
+    scenario 'creates product' do
+      sign_in(admin_user)
 
-    click_new_product_link
-    fill_in 'product_name', with: 'Product name'
-    fill_in 'product_wieght', with: '1.11'
-    select hangar.number, from: 'product_hangar_id'
-    click_on 'Сохранить'
+      click_new_product_link
+      fill_in 'product_name', with: 'Product name'
+      fill_in 'product_wieght', with: '1.11'
+      select hangar.number, from: 'product_hangar_id'
+      click_on 'Сохранить'
 
-    # expect(page).to have_content 'Your product successfully created'
-    expect(page).to have_content 'Product name'
-    expect(page).to have_content '1.11'
-    expect(page).to have_content 'Ангар: 1'
+      expect(page).to have_content 'Product name'
+      expect(page).to have_content '1.11'
+      expect(page).to have_content 'Ангар: 1'
+    end
+
+    scenario 'tries to create product with blank fields' do
+      sign_in(admin_user)
+
+      click_new_product_link
+      click_on 'Сохранить'
+
+      expect(page).to have_content "Name can't be blank"
+      expect(page).to have_content "Wieght can't be blank"
+      expect(page).to have_content "Hangar must exist"
+    end
   end
 
-  scenario 'Authenticated user tries to create product with blank fields' do
-    sign_in(user)
+  describe 'Contractor user' do
+    before { contractor_user.add_role(:contractor) }
+    scenario 'does not create product' do
+      sign_in(contractor_user)
 
-    click_new_product_link
-    click_on 'Сохранить'
+      visit products_path
+      expect(page).to_not have_content 'Добавить номенклатуру'
+    end
+  end
 
-    expect(page).to have_content "Name can't be blank"
-    expect(page).to have_content "Wieght can't be blank"
-    expect(page).to have_content "Hangar must exist"
+  describe 'Seller user' do
+    before { seller_user.add_role(:seller) }
+    scenario 'does not create product' do
+      sign_in(seller_user)
+
+      visit products_path
+      expect(page).to_not have_content 'Добавить номенклатуру'
+    end
   end
 
   scenario 'Unauthenticated user tries to create product' do
@@ -43,6 +67,9 @@ feature 'Create product', %q{
 
   def click_new_product_link
     visit products_path
-    click_on 'Добавить номенклатуру'
+
+    within '.products' do
+      click_on 'Добавить номенклатуру'
+    end
   end
 end
