@@ -16,7 +16,7 @@ class Admin::UsersController < Admin::BaseController
 
   def create
     @user = User.create(user_params)
-    set_role
+    @user.set_role(params[:role])
     respond_with(:admin, @user)
   end
 
@@ -25,7 +25,7 @@ class Admin::UsersController < Admin::BaseController
 
   def update
     @user.update(user_params)
-    set_role
+    @user.set_role(params[:role])
     respond_with(:admin, @user)
   end
 
@@ -38,13 +38,6 @@ class Admin::UsersController < Admin::BaseController
   def user_params
     params.require(:user).permit(:name, :email, :password, :password_confirmation,
                                  :current_password)
-  end
-
-  def set_role
-    unless @user == current_user
-      @user.roles.destroy_all
-      @user.add_role(Role.find(params[:role]).name)
-    end
   end
 
   def set_user
