@@ -57,9 +57,12 @@ RSpec.describe ProductsController, type: :controller do
   end
 
   describe 'GET #new' do
-    context 'authenticated user tries to create product' do
+    context 'admin tries to create product' do
       sign_in_user
-      before { get :new }
+      before do
+        @user.add_role(:admin)
+        get :new
+      end
       it 'assigns a new Product to @product' do
         expect(assigns(:product)).to be_a_new(Product)
       end
@@ -69,7 +72,37 @@ RSpec.describe ProductsController, type: :controller do
       end
     end
 
-    context 'guest tries to view product' do
+    context 'seller tries to add product' do
+      sign_in_user
+      before do
+        @user.add_role(:seller)
+        get :new
+      end
+      it 'assigns a new Product to @product' do
+        expect(assigns(:product)).to_not be_a_new(Product)
+      end
+
+      it 'renders new view' do
+        expect(response).to_not render_template :new
+      end
+    end
+
+    context 'contractor tries to add product' do
+      sign_in_user
+      before do
+        @user.add_role(:contractor)
+        get :new
+      end
+      it 'assigns a new Product to @product' do
+        expect(assigns(:product)).to_not be_a_new(Product)
+      end
+
+      it 'renders new view' do
+        expect(response).to_not render_template :new
+      end
+    end
+
+    context 'guest tries to add product' do
       before { get :new }
       it 'assigns a new Product to @product' do
         expect(assigns(:product)).to_not be_a_new(Product)
@@ -82,8 +115,9 @@ RSpec.describe ProductsController, type: :controller do
   end
 
   describe 'POST #create' do
-    context 'authenticated user tries to create product' do
+    context 'admin tries to create product' do
       sign_in_user
+      before { @user.add_role(:admin) }
       context 'with valid attributes' do
 
         it 'creates a new Product' do
@@ -113,6 +147,40 @@ RSpec.describe ProductsController, type: :controller do
       end
     end
 
+    context 'seller tries to create product' do
+      sign_in_user
+      before { @user.add_role(:seller) }
+      it 'does not create a new Product' do
+        product
+        expect { post :create, params: { product: attributes_for(:product)
+          .merge(hangar_id: product.hangar) } }
+          .to_not change(Product, :count)
+      end
+
+      it 'redirects to new session path' do
+        post :create, params: { product: attributes_for(:product)
+          .merge(hangar_id: product.hangar) }
+        expect(response).to redirect_to products_path
+      end
+    end
+
+    context 'contractor tries to create product' do
+      sign_in_user
+      before { @user.add_role(:contractor) }
+      it 'does not create a new Product' do
+        product
+        expect { post :create, params: { product: attributes_for(:product)
+          .merge(hangar_id: product.hangar) } }
+          .to_not change(Product, :count)
+      end
+
+      it 'redirects to new session path' do
+        post :create, params: { product: attributes_for(:product)
+          .merge(hangar_id: product.hangar) }
+        expect(response).to redirect_to products_path
+      end
+    end
+
     context 'unauthenticated user tries to create product' do
       it 'does not create a new Product' do
         product
@@ -131,8 +199,9 @@ RSpec.describe ProductsController, type: :controller do
 
   describe 'PATCH #update' do
 
-    context 'authenticated user tries to update product' do
+    context 'admin tries to update product' do
       sign_in_user
+      before { @user.add_role(:admin) }
 
       context 'with valid attributes' do
         it 'assigns the requested product to @product' do
@@ -175,6 +244,48 @@ RSpec.describe ProductsController, type: :controller do
       end
     end
 
+    context 'seller user tries to update product' do
+      let(:name) { product.name }
+      let(:wieght) { product.wieght }
+      sign_in_user
+
+      before do
+        @user.add_role(:seller)
+        patch :update, params: { id: product,
+          product: { name: 'new_name', body: '111' } }
+      end
+      it 'does not update product attributes' do
+        product.reload
+        expect(product.name).to eq name
+        expect(product.wieght).to eq wieght
+      end
+
+      it 'redirects to new sesseion path' do
+        expect(response).to redirect_to products_path
+      end
+    end
+
+    context 'contractor user tries to update product' do
+      let(:name) { product.name }
+      let(:wieght) { product.wieght }
+      sign_in_user
+
+      before do
+        @user.add_role(:contractor)
+        patch :update, params: { id: product,
+          product: { name: 'new_name', body: '111' } }
+      end
+      it 'does not update product attributes' do
+        product.reload
+        expect(product.name).to eq name
+        expect(product.wieght).to eq wieght
+      end
+
+      it 'redirects to new sesseion path' do
+        expect(response).to redirect_to products_path
+      end
+    end
+
     context 'unauthenticated user tries to update product' do
       let(:name) { product.name }
       let(:wieght) { product.wieght }
@@ -196,9 +307,12 @@ RSpec.describe ProductsController, type: :controller do
 
   describe 'DELETE #destroy' do
 
-    context 'authenticated user tries to delete product' do
+    context 'admin tries to delete product' do
       sign_in_user
-      before { product }
+      before do
+        @user.add_role(:admin)
+        product
+      end
 
       it 'deletes product' do
         expect { delete :destroy, params: { id: product } }
@@ -206,6 +320,40 @@ RSpec.describe ProductsController, type: :controller do
       end
 
       it 'redirects to index view' do
+        delete :destroy, params: { id: product }
+        expect(response).to redirect_to products_path
+      end
+    end
+
+    context 'seller tries to delete product' do
+      sign_in_user
+      before do
+        @user.add_role(:seller)
+        product
+      end
+      it 'does not deletes product' do
+        expect { delete :destroy, params: { id: product } }
+          .to_not change(Product, :count)
+      end
+
+      it 'redirects to new session path' do
+        delete :destroy, params: { id: product }
+        expect(response).to redirect_to products_path
+      end
+    end
+
+    context 'contractor tries to delete product' do
+      sign_in_user
+      before do
+        @user.add_role(:contractor)
+        product
+      end
+      it 'does not deletes product' do
+        expect { delete :destroy, params: { id: product } }
+          .to_not change(Product, :count)
+      end
+
+      it 'redirects to new session path' do
         delete :destroy, params: { id: product }
         expect(response).to redirect_to products_path
       end
