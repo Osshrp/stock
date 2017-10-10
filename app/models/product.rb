@@ -9,5 +9,5 @@ class Product < ApplicationRecord
   validates_numericality_of :wieght
   validates_uniqueness_of :name
 
-  self.per_page = 5
+  self.per_page = 10
 end
