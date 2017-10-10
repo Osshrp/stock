@@ -11,7 +11,7 @@ p Здравствуйте, "Администратор"
     tbody
       - @transactions.each do |transaction|
         tr
-          td= transaction.transaction_date
+          td= transaction.transaction_date.strftime("%Y-%m-%d %H:%M:%S")
           td= transaction.user.name
           td= transaction.quantity
           td= transaction.product.name
