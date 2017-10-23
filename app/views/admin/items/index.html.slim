@@ -1,0 +1,39 @@
+p Здравствуйте, "Администратор"
+.transactions
+  h4 Истории операций:
+  table.table.table-bordered.table-hover
+    thead
+      tr
+        th Дата
+        th Организация
+        th Количество (шт.)
+        th Наименование товара
+    tbody
+      - @transactions.each do |transaction|
+        tr
+          td= transaction.transaction_date.strftime("%Y-%m-%d %H:%M:%S")
+          td= transaction.user.name
+          td= transaction.quantity
+          td= transaction.product.name
+
+.items
+  h4 Остатки грузов:
+  table.table.table-bordered.table-hover
+    thead
+      tr
+        th №
+        th Наименование
+        th Вес
+        th Остаток на складе (ящ)
+        th Остаток не складе (кг)
+        th Ангар
+    tbody
+      = render @items, index: @index
+      tr
+        td { colspan = '3' } Итого:
+        td #{@items.sum(:quantity)} ящиков
+  p Общая масса грузов:
+  - Hangar.all.map do |hangar|
+    p= "Ангар №#{hangar.number}: #{hangar.sum_wieght}"
+  end
+  p= link_to 'Добавить товар на склад', new_item_path, class: 'btn btn-primary'

@@ -28,23 +28,33 @@ html lang="en"
           a.navbar-brand href="#"Stock
           .navbar-collapse.collapse.navbar-responsive-collapse
             ul.nav.navbar-nav
-              li= link_to "Link 1", "/path1"
-              li= link_to "Link 2", "/path2"
-              li= link_to "Link 3", "/path3"
+              - if user_signed_in?
+                li= link_to 'Номенклатура товаров', products_path(my_posts: '1')
+                - if can?(:read, Item)
+                  li= link_to 'Склад',  items_path
+                - if can?(:manage, User)
+                  li= link_to 'Управление пользователями', admin_users_path
+                li= link_to 'Выйти', destroy_user_session_path, method: :delete
+                li= link_to current_user.email, '#'
+              - else
+                li= link_to 'Войти', new_user_session_path
 
     .container
       .row
         .col-lg-9
           = bootstrap_flash
           = yield
-        .col-lg-3
-          .well.sidebar-nav
-            h3 Sidebar
-            ul.nav.nav-list
-              li.nav-header Sidebar
-              li= link_to "Link 1", "/path1"
-              li= link_to "Link 2", "/path2"
-              li= link_to "Link 3", "/path3"
+        - if can?(:create, Item) || can?(:create, Product)
+          .col-lg-3
+            .well.sidebar-nav
+              ul.nav.nav-list
+                li.nav-header Sidebar
+                - if can?(:create, Item)
+                  li= link_to 'Добвавить товар на склад', new_item_path
+                - if can?(:create, Product)
+                  li= link_to 'Добавить номенклатуру', new_product_path
+                - if current_user.has_role?(:admin)
+                  li= link_to 'Админ панель', admin_items_path
 
       footer
         p &copy; Company 2017

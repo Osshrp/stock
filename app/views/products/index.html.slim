@@ -1,0 +1,13 @@
+= will_paginate @products
+.products
+  table.table.table-bordered.table-hover
+    thead
+      tr
+        th №
+        th Наименование
+        th Вес
+        th Ангар
+    tbody
+      = render @products, index: @index
+  - if can?(:create, Product)
+    p = link_to 'Добавить номенклатуру', new_product_path, class: 'btn btn-primary'

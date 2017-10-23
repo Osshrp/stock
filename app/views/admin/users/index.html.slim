@@ -1,0 +1,9 @@
+table.table.table-bordered.table-hover
+  thead
+    tr
+      th Имя
+      th Email
+      th Роль
+  tbody
+    = render @users
+p = link_to 'Добавить пользователя', new_user_registration_path, class: 'btn btn-primary'
